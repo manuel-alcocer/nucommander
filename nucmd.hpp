@@ -17,20 +17,47 @@
 namespace nucmd {
     class Ui;
     class AbstractPane;
+    class AbstractItem;
+    class AbstractItemList;
+    class Item;
+    class ItemList;
     class Pane;
-    class MenuItem;
     enum class Dim {HEIGHT, WIDTH, Y, X};
     enum class Panes {TOP, BOTTOM, LEFT, RIGHT};
     enum class Layout {HORIZONTAL, VERTICAL, HORIZONTAL_GRID, VERTICAL_GRID};
     enum class Menus {FILE, EDIT, VIEW, HELP, COUNT};
 }
 
-struct nucmd::MenuItem {
-    MenuItem(std::string, std::string, std::string, int);
-    std::string name;
-    std::string description;
-    std::string command;
-    int fkey;
+class nucmd::AbstractItem{
+public:
+    virtual void set_text(std::string) = 0;
+    virtual std::string get_text() = 0;
+protected:
+    std::string text;
+    bool selected;
+};
+
+class nucmd::Item : public nucmd::AbstractItem {
+    Item() = default;
+    void set_text(std::string) override;
+    std::string get_text() override;
+};
+
+class nucmd::AbstractItemList {
+public:
+    AbstractItemList();
+    virtual void push_back(Item) = 0;
+    virtual void set_selected(int) = 0;
+protected:
+    std::vector<Item> items;
+    int selected_index;
+};
+
+class nucmd::ItemList : public nucmd::AbstractItemList {
+public:
+    ItemList() = default;
+    void push_back(Item) override;
+    void set_selected(int) override;
 };
 
 class nucmd::AbstractPane {
@@ -47,10 +74,10 @@ public:
     virtual void set_layout_spacing(int) = 0;
     virtual void set_cursor(int, int) = 0;
     virtual void reset_cursor() = 0;
-    virtual void print(std::string) = 0;
     virtual void increment_cursor() = 0;
     virtual void panel_top() = 0;
     virtual void panel_bottom() = 0;
+    virtual void add_item(Item) = 0;
 protected:
     WINDOW* win;
     PANEL* panel;
@@ -62,6 +89,7 @@ protected:
     int layout_spacing;
     std::vector<int> cursor; // the current cursor position
     std::vector<int> cursor_config; // the default cursor position
+    ItemList items;
 };
 
 class nucmd::Pane : public nucmd::AbstractPane {
@@ -78,10 +106,10 @@ public:
     void set_layout_spacing(int) override;
     void set_cursor(int, int) override;
     void reset_cursor() override;
-    void print(std::string) override;
     void increment_cursor() override;
     void panel_top() override;
     void panel_bottom() override;
+    void add_item(Item) override;
 };
 
 class nucmd::Ui {
@@ -103,11 +131,10 @@ private:
     void draw_panes();
     void put_menu();
 
-    std::vector<std::unique_ptr<AbstractPane>> panes;
-    std::vector<std::unique_ptr<AbstractPane>> menus;
-    std::vector<std::unique_ptr<MenuItem>> menu_items;
     int key_pressed;
-    std::unique_ptr<AbstractPane> menu_active;
+    std::vector<Pane> panes;
+    std::vector<Pane> menus;
+    std::unique_ptr<Pane> menu_active;
 };
 
 #endif

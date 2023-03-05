@@ -70,15 +70,6 @@ void Pane::reset_cursor() {
     cursor[1] = cursor_config[1];
 }
 
-void Pane::print(std::string str) {
-    wmove(win, cursor[0], cursor[1]);
-    for (auto& c : str) {
-        waddch(win, c);
-        increment_cursor();
-    }
-    increment_cursor();
-}
-
 void Pane::increment_cursor() {
     if (layout == Layout::HORIZONTAL) {
         cursor[1] += layout_spacing;
@@ -91,4 +82,8 @@ void Pane::panel_top() {
 
 void Pane::panel_bottom() {
     bottom_panel(panel);
+}
+
+void Pane::add_item(Item item) {
+    items.push_back(item);
 }
