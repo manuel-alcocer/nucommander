@@ -77,7 +77,7 @@ public:
     virtual void increment_cursor() = 0;
     virtual void panel_top() = 0;
     virtual void panel_bottom() = 0;
-    virtual void add_item(Item) = 0;
+    virtual void push_back(Item) = 0;
 protected:
     WINDOW* win;
     PANEL* panel;
@@ -109,7 +109,7 @@ public:
     void increment_cursor() override;
     void panel_top() override;
     void panel_bottom() override;
-    void add_item(Item) override;
+    void push_back(Item) override;
 };
 
 class nucmd::Ui {
