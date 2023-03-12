@@ -1,144 +1,174 @@
 #ifndef NUCMD_HPP
 #define NUCMD_HPP
 
+#include <string>
+#include <iostream>
+#include <vector>
 #include <ncurses.h>
 #include <panel.h>
-#include <memory>
-#include <vector>
-#include <iostream>
-#include <string>
 
-#define UI_EXIT_KEY KEY_F(10)
+#define NUCMD_VERSION "0.1"
+#define QUIT_KEY KEY_F(10)
 
-#define TOP_PANE_HEIGHT 1
-#define BOTTOM_PANE_HEIGHT 1
 #define LEFT_PANE_WIDTH 20
+#define TOP_PANE_HEIGHT 3
+#define BOTTOM_PANE_HEIGHT 3
+
+#define LEFT_PANE (int)Panes::LEFT
+#define RIGHT_PANE (int)Panes::RIGHT
+#define TOP_PANE (int)Panes::TOP
+#define BOTTOM_PANE (int)Panes::BOTTOM
+#define PANES_COUNT (int)Panes::COUNT
+
+#define HEIGHT_DIM (int)Dims::HEIGHT
+#define WIDTH_DIM (int)Dims::WIDTH
+#define Y_DIM (int)Dims::Y
+#define X_DIM (int)Dims::X
+#define DIMS_COUNT (int)Dims::COUNT
+
+#define MENU_PANE TOP_PANE
+#define STATUS_PANE BOTTOM_PANE
+#define OPTIONS_PANE LEFT_PANE
+#define CONTENT_PANE RIGHT_PANE
+
+#define HORIZONTAL_LAYOUT (int)Layouts::HORIZONTAL
+#define VERTICAL_LAYOUT (int)Layouts::VERTICAL
+#define HORIZONTAL_GRID_LAYOUT (int)Layouts::HORIZONTAL_GRID
+#define VERTICAL_GRID_LAYOUT (int)Layouts::VERTICAL_GRID
+
+#define LEFT_ALIGN (int)LayoutAlignments::LEFT
+#define RIGHT_ALIGN (int)LayoutAlignments::RIGHT
+#define CENTER_ALIGN (int)LayoutAlignments::CENTER
+#define JUSTIFIED_ALIGN (int)LayoutAlignments::JUSTIFIED
+
+#define FIXED_ITEM_EXPAND (int)ItemExpansion::FIXED
+#define FILL_ITEM_EXPAND (int)ItemExpansion::FILL
+#define FIT_ITEM_EXPAND (int)ItemExpansion::FIT
+
+#define KEY_TAB '\t'
+#define KEY_ESC 27
 
 namespace nucmd {
-    class Ui;
-    class AbstractPane;
-    class AbstractItem;
-    class AbstractItemList;
     class Item;
-    class ItemList;
     class Pane;
-    enum class Dim {HEIGHT, WIDTH, Y, X};
-    enum class Panes {TOP, BOTTOM, LEFT, RIGHT};
-    enum class Layout {HORIZONTAL, VERTICAL, HORIZONTAL_GRID, VERTICAL_GRID};
-    enum class Menus {FILE, EDIT, VIEW, HELP, COUNT};
+    class Nucmd;
+    enum class Panes { LEFT, RIGHT, TOP, BOTTOM, COUNT };
+    enum class Dims { HEIGHT, WIDTH, Y, X, COUNT };
+    enum class Layouts { HORIZONTAL, VERTICAL, HORIZONTAL_GRID, VERTICAL_GRID };
+    enum class LayoutAlignments { LEFT, RIGHT, CENTER, JUSTIFIED };
+    enum class ItemExpansion { FIXED, FILL, FIT };
 }
 
-class nucmd::AbstractItem{
+class nucmd::Item {
 public:
-    virtual void set_text(std::string) = 0;
-    virtual std::string get_text() = 0;
-protected:
-    std::string text;
-    bool selected;
-};
+    Item();
 
-class nucmd::Item : public nucmd::AbstractItem {
-    Item() = default;
-    void set_text(std::string) override;
-    std::string get_text() override;
-};
+    Item(const Item&) = default;
+    Item(Item&&) = default;
+    Item& operator=(const Item&) = default;
+    Item& operator=(Item&&) = default;
+    ~Item() = default;
 
-class nucmd::AbstractItemList {
-public:
-    AbstractItemList();
-    virtual void push_back(Item) = 0;
-    virtual void insert(int, Item) = 0;
-    virtual void set_selected(int) = 0;
-protected:
-    std::vector<Item> items;
-    int selected_index;
-};
-
-class nucmd::ItemList : public nucmd::AbstractItemList {
-public:
-    ItemList() = default;
-    void push_back(Item) override;
-    void insert(int, Item) override;
-    void set_selected(int) override;
-};
-
-class nucmd::AbstractPane {
-public:
-    AbstractPane();
-    virtual void draw_border() = 0;
-    virtual void resize() = 0;
-    virtual void set_dim(nucmd::Dim, int) = 0;
-    virtual int get_dim(nucmd::Dim) = 0;
-    virtual void set_color_pairs(int, int) = 0;
-    virtual void set_border_enabled(bool) = 0;
-    virtual void refresh() = 0;
-    virtual void set_layout(nucmd::Layout) = 0;
-    virtual void set_layout_spacing(int) = 0;
-    virtual void set_cursor(int, int) = 0;
-    virtual void reset_cursor() = 0;
-    virtual void increment_cursor() = 0;
-    virtual void panel_top() = 0;
-    virtual void panel_bottom() = 0;
-    virtual void insert_item(Item) = 0;
-    virtual void push_back_item(Item) = 0;
-protected:
-    WINDOW* win;
-    PANEL* panel;
-    std::vector<int> dims;
-    bool border_enabled;
-    int foreground_color;
-    int background_color;
-    nucmd::Layout layout;
-    int layout_spacing;
-    std::vector<int> cursor; // the current cursor position
-    std::vector<int> cursor_config; // the default cursor position
-    ItemList items;
-};
-
-class nucmd::Pane : public nucmd::AbstractPane {
-public:
-    Pane() = default;
-    void draw_border() override;
-    void resize() override;
-    void refresh() override;
-    void set_dim(nucmd::Dim, int) override;
-    int get_dim(nucmd::Dim) override;
-    void set_color_pairs(int, int) override;
-    void set_border_enabled(bool) override;
-    void set_layout(nucmd::Layout) override;
-    void set_layout_spacing(int) override;
-    void set_cursor(int, int) override;
-    void reset_cursor() override;
-    void increment_cursor() override;
-    void panel_top() override;
-    void panel_bottom() override;
-    void insert_item(Item) override;
-    void push_back_item(Item) override;
-};
-
-class nucmd::Ui {
-public:
-    Ui();
-    ~Ui();
-    int run();
+    std::string name();
+    void name(std::string);
+    std::string text();
+    void text(std::string);
+    std::string label();
+    void label(std::string);
+    void setDim(int, int);
+    int getDim(int);
 private:
-    bool get_key();
-    void action_key();
-    void initialize_panes();
-    void initialize_ncurses();
-    void initialize_colors();
-    void initialize_menubar();
-    void initialize_menus();
-    void show_menu(nucmd::Menus);
-    void recalc_panes_dimensions();
-    void resize_panes();
-    void draw_panes();
-    void put_menu();
-
-    int key_pressed;
-    std::vector<Pane> panes;
-    std::vector<Pane> menus;
-    std::unique_ptr<Pane> menu_active;
+    std::string _name;
+    std::string _text;
+    std::string _label;
+    std::vector<int> dims;
 };
 
-#endif
+class nucmd::Pane {
+public:
+    Pane();
+
+    ~Pane() = default;
+    Pane(const Pane&) = default;
+    Pane(Pane&&) = default;
+    Pane& operator=(const Pane&) = default;
+    Pane& operator=(Pane&&) = default;
+
+    void setDim(int dim, int value);
+    int getDim(int dim);
+    void enableBorder();
+    void disableBorder();
+    void setLayout(int);
+    void setLayoutAlignment(int);
+    void setItemExpansion(int);
+    void setItemWidth(int);
+    void resize();
+    void addItem(std::string name);
+    void setItemSeparator(std::string separator);
+    std::string getItemSeparator();
+    void calculateItemsDimensions();
+    void setItemsDimensions();
+    void setItemsDimensionsFit();
+    void setNoItems(int);
+    void printItems();
+    void printItem(Item item);
+    void simplePrint(std::string text);
+    void setActivable(bool);
+    bool isActivable();
+private:
+    WINDOW* window;
+    PANEL* panel;
+    bool border_enabled;
+
+    std::vector<int> dims;
+    std::vector<Item> items;
+    std::vector<int> horizontal_items;
+    std::vector<int> vertical_items;
+    int color_pair;
+    int layout;
+    int layout_alignment;
+    int item_expansion;
+    int left_margin;
+    int right_margin;
+    int top_margin;
+    int bottom_margin;
+    int no_items;
+    int items_width;
+    bool activable;
+    std::string item_separator;
+};
+
+class nucmd::Nucmd {
+public:
+    Nucmd();
+    ~Nucmd() = default;
+    Nucmd(const Nucmd&) = default;
+    Nucmd(Nucmd&&) = default;
+    Nucmd& operator=(const Nucmd&) = default;
+    Nucmd& operator=(Nucmd&&) = default;
+
+    void run();
+
+private:
+    void initCurses();
+    void initColors();
+    void endCurses();
+    void initPanes();
+    void createPanes();
+    void recalculatePanes();
+    void resizePanes();
+    void initMenuPane();
+    void createMenuItems();
+    void calculateMenuItemsDimensions();
+    void putPanesContent();
+    void drawPanes();
+    void updatePanes();
+    void toggleActivePane();
+
+    void handleInput();
+
+    std::vector<Pane> panes;
+    int key_pressed;
+    int active_pane;
+};
+#endif // NUCMD_HPP

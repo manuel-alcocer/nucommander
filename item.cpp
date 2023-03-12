@@ -2,25 +2,41 @@
 
 using namespace nucmd;
 
-void Item::set_text(std::string text) {
-    this->text = text;
+Item::Item()
+    : _name("")
+    , _text("")
+    , _label("")
+    , dims{0,0,0,0}
+{}
+
+std::string Item::name(){
+    return _name;
 }
 
-std::string Item::get_text() {
-    return this->text;
+void Item::name(std::string name){
+    _name = name;
 }
 
-AbstractItemList::AbstractItemList() {
-    selected_index = 0;
+std::string Item::text(){
+    return _text;
 }
 
-void ItemList::push_back(Item&& item) {
-    items.push_back(item);
+void Item::text(std::string text){
+    _text = text;
 }
 
-void ItemList::insert(int pos, Item item) {
+std::string Item::label(){
+    return _label;
 }
 
-void ItemList::set_selected(int index) {
-    selected_index = index;
+void Item::label(std::string label){
+    _label = label;
+}
+
+void Item::setDim(int dim, int value){
+    dims.at(dim) = value;
+}
+
+int Item::getDim(int dim){
+    return dims.at(dim);
 }
