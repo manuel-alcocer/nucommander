@@ -115,6 +115,7 @@ public:
     void simplePrint(std::string text);
     void setActivable(bool);
     bool isActivable();
+    void setActive(bool);
 private:
     WINDOW* window;
     PANEL* panel;
@@ -135,6 +136,7 @@ private:
     int no_items;
     int items_width;
     bool activable;
+    bool active;
     std::string item_separator;
 };
 
@@ -164,6 +166,7 @@ private:
     void drawPanes();
     void updatePanes();
     void toggleActivePane();
+    void setActivePane(int);
 
     void handleInput();
 

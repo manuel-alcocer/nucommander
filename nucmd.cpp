@@ -65,7 +65,6 @@ void Nucmd::createPanes(){
 
     panes.at(BOTTOM_PANE).setDim(HEIGHT_DIM, BOTTOM_PANE_HEIGHT);
     panes.at(BOTTOM_PANE).setDim(X_DIM, 0);
-    panes.at(BOTTOM_PANE).setActivable(true);
 
     panes.at(MENU_PANE).setLayout(HORIZONTAL_LAYOUT);
     panes.at(MENU_PANE).setItemExpansion(FILL_ITEM_EXPAND);
@@ -94,9 +93,8 @@ void Nucmd::recalculatePanes(){
 }
 
 void Nucmd::resizePanes(){
-    for (auto& pane : panes){
+    for (auto& pane : panes)
         pane.resize();
-    }
 }
 
 void Nucmd::initMenuPane(){
@@ -142,17 +140,25 @@ int main(int argc, char *argv[]){
 }
 
 void Nucmd::toggleActivePane(){
-    if (active_pane == -1){
+    if (active_pane == -1)
         active_pane = 0;
-    } else {
+    else {
         active_pane++;
-        active_pane %= panes.size();
+        active_pane %= (panes.size()+1);
     }
-    if (panes.at(active_pane).isActivable() == false){
+    if (active_pane >= panes.size())
+        active_pane = -1;
+    else if (panes.at(active_pane).isActivable() == false)
         toggleActivePane();
-    }
 }
 
+void Nucmd::setActivePane(int pane){
+    for (auto& p : panes){
+        p.setActive(false);
+    }
+    if (pane != -1)
+        panes.at(pane).setActive(true);
+}
 void Nucmd::handleInput(){
     std::string text;
     std::string key_name = keyname(key_pressed);
@@ -168,12 +174,14 @@ void Nucmd::handleInput(){
             break;
         case KEY_TAB:
             toggleActivePane();
+            setActivePane(active_pane);
             text = "Changing active pane to: " + std::to_string(active_pane);
             break;
         case KEY_ESC:
             nodelay(stdscr, TRUE);
-            text = "Escaping";
-            if (getch() != ERR){
+            if (getch() == ERR){
+                text = "Escaping";
+            } else {
                 text = "No Escaping";
             }
             nodelay(stdscr, FALSE);

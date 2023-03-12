@@ -158,3 +158,17 @@ void Pane::setActivable(bool value){
 bool Pane::isActivable(){
     return activable;
 }
+
+void Pane::setActive(bool value){
+    active = value;
+    if (active){
+        wattron(window, A_BOLD);
+    } else {
+        wattroff(window, A_BOLD);
+    }
+    if (border_enabled){
+        box(window, 0, 0);
+    }
+    update_panels();
+    doupdate();
+}
