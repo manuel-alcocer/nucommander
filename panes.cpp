@@ -84,6 +84,9 @@ void Pane::panel_bottom() {
     bottom_panel(panel);
 }
 
-void Pane::push_back(Item item) {
+void Pane::push_back_item(Item item) {
     items.push_back(item);
+}
+
+void Pane::insert_item(Item item) {
 }

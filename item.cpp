@@ -14,8 +14,11 @@ AbstractItemList::AbstractItemList() {
     selected_index = 0;
 }
 
-void ItemList::push_back(Item item) {
+void ItemList::push_back(Item&& item) {
     items.push_back(item);
+}
+
+void ItemList::insert(int pos, Item item) {
 }
 
 void ItemList::set_selected(int index) {

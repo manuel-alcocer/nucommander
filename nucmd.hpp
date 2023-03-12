@@ -47,6 +47,7 @@ class nucmd::AbstractItemList {
 public:
     AbstractItemList();
     virtual void push_back(Item) = 0;
+    virtual void insert(int, Item) = 0;
     virtual void set_selected(int) = 0;
 protected:
     std::vector<Item> items;
@@ -57,6 +58,7 @@ class nucmd::ItemList : public nucmd::AbstractItemList {
 public:
     ItemList() = default;
     void push_back(Item) override;
+    void insert(int, Item) override;
     void set_selected(int) override;
 };
 
@@ -77,7 +79,8 @@ public:
     virtual void increment_cursor() = 0;
     virtual void panel_top() = 0;
     virtual void panel_bottom() = 0;
-    virtual void push_back(Item) = 0;
+    virtual void insert_item(Item) = 0;
+    virtual void push_back_item(Item) = 0;
 protected:
     WINDOW* win;
     PANEL* panel;
@@ -109,7 +112,8 @@ public:
     void increment_cursor() override;
     void panel_top() override;
     void panel_bottom() override;
-    void push_back(Item) override;
+    void insert_item(Item) override;
+    void push_back_item(Item) override;
 };
 
 class nucmd::Ui {
