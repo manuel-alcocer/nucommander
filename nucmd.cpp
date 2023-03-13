@@ -67,7 +67,7 @@ void Nucmd::createPanes(){
     panes.at(BOTTOM_PANE).setDim(X_DIM, 0);
 
     panes.at(MENU_PANE).setLayout(HORIZONTAL_LAYOUT);
-    panes.at(MENU_PANE).setItemExpansion(FILL_ITEM_EXPAND);
+    panes.at(MENU_PANE).setItemExpansion(FIT_ITEM_EXPAND);
 }
 
 void Nucmd::recalculatePanes(){
@@ -108,9 +108,7 @@ void Nucmd::createMenuItems(){
     panes.at(MENU_PANE).addItem("Settings");
     panes.at(MENU_PANE).addItem("Help");
 
-    panes.at(MENU_PANE).setNoItems(4);
     panes.at(MENU_PANE).setItemWidth(13);
-    panes.at(MENU_PANE).setItemExpansion(FIT_ITEM_EXPAND);
 }
 
 void Nucmd::calculateMenuItemsDimensions(){

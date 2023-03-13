@@ -109,7 +109,7 @@ public:
     void calculateItemsDimensions();
     void setItemsDimensions();
     void setItemsDimensionsFit();
-    void setNoItems(int);
+    int getNumberOfItems();
     void printItems();
     void printItem(Item item);
     void simplePrint(std::string text);
@@ -133,7 +133,6 @@ private:
     int right_margin;
     int top_margin;
     int bottom_margin;
-    int no_items;
     int items_width;
     bool activable;
     bool active;

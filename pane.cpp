@@ -3,7 +3,7 @@
 using namespace nucmd;
 
 Pane::Pane()
-    :no_items(1),
+    :
     border_enabled(true),
     layout(VERTICAL_LAYOUT),
     layout_alignment(LEFT_ALIGN),
@@ -85,8 +85,8 @@ void Pane::calculateItemsDimensions(){
             break;
         case FILL_ITEM_EXPAND:
             items_width = getmaxx(window) - left_margin - right_margin;
-            items_width -= (no_items - 1) * item_separator.length();
-            items_width /= no_items;
+            items_width -= (getNumberOfItems() - 1) * item_separator.length();
+            items_width /= getNumberOfItems();
             setItemsDimensions();
             break;
         case FIT_ITEM_EXPAND:
@@ -119,8 +119,8 @@ void Pane::setItemsDimensionsFit(){
     }
 }
 
-void Pane::setNoItems(int value){
-    no_items = value;
+int Pane::getNumberOfItems(){
+    return int(items.size());
 }
 
 void Pane::printItems(){
